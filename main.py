@@ -1,28 +1,25 @@
 #! /usr/bin/env python3
 
 import discord
+import os
 import re
-import Config
+import yaml
+from Config import Config
 import Suggestion
 
 GUILD_CHANNEL_NAME = "guild-names"
 client = discord.Client()
-config = Config.Config()
+config = Config.config_factory()
 
 
 def main():
-    # read in token
-    token_file = open(config.TOKEN_FILE_NAME, "r")
-    token = token_file.readline().rstrip()
-    token_file.close()
-
-    # read in master id
-    master_file = open(config.MASTER_FILE_NAME, "r")
-    config.set_matser_id(int(master_file.readline().rstrip()))
-    master_file.close()
     print("My master's user id is " + str(config.get_master_id()))
 
-    client.run(token)
+    if not os.path.isfile(config.CONFIG_YAML_FILE_NAME):
+        with open(config.CONFIG_YAML_FILE_NAME, 'w') as config_output:
+            yaml.dump(config, config_output)
+
+    client.run(config.get_token())
 
 
 async def fetch_suggestions(server, response_channel, max_results, from_channel):
