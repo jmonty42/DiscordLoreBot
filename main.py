@@ -2,26 +2,25 @@
 
 import discord
 import re
+import Config
+import Suggestion
 
-TOKEN_FILE_NAME = "token.txt"
-MASTER_FILE_NAME = "master.txt"
 GUILD_CHANNEL_NAME = "guild-names"
 client = discord.Client()
-master = ""
+config = Config.Config()
 
 
 def main():
-    global master
     # read in token
-    token_file = open(TOKEN_FILE_NAME, "r")
+    token_file = open(config.TOKEN_FILE_NAME, "r")
     token = token_file.readline().rstrip()
     token_file.close()
 
     # read in master id
-    master_file = open(MASTER_FILE_NAME, "r")
-    master = int(master_file.readline().rstrip())
+    master_file = open(config.MASTER_FILE_NAME, "r")
+    config.set_matser_id(int(master_file.readline().rstrip()))
     master_file.close()
-    print("My master's user id is " + str(master))
+    print("My master's user id is " + str(config.get_master_id()))
 
     client.run(token)
 
@@ -61,7 +60,7 @@ async def fetch_suggestions(server, response_channel, max_results, from_channel)
                 voters_count = len(voters)
                 voters = voters.union(set(users))
                 count += len(voters) - voters_count
-        suggestions.append(Suggestion(count, message.content, url, author))
+        suggestions.append(Suggestion.Suggestion(count, message.content, url, author))
     suggestions.sort(key=lambda suggestion: suggestion.votes, reverse=True)
     for rank in range(len(suggestions)):
         response_string = str(rank + 1) + ": from " + suggestions[rank].author.mention
@@ -99,32 +98,50 @@ async def on_message(message):
 
     if client.user in message.mentions:
         async with message.channel.typing():
-            if message.author.id != master:
+            if message.author.id != config.get_master_id():
                 await message.channel.send("I don't answer to you!")
                 return
             print("My master is talking to me on the " + message.guild.name + " server.")
-            max_results = 10
-            match = re.search(r'top (\d+)', message.content)
-            if match and match.group(1):
-                max_results = int(match.group(1))
-            from_channel = GUILD_CHANNEL_NAME
-            if message.channel_mentions:
-                if len(message.channel_mentions) > 1:
-                    message.channel.send("Please only specify 1 channel at a time to get suggestions from.")
-                    return
-                from_channel = message.channel_mentions[0].name
-            await fetch_suggestions(message.guild, message.channel, max_results, from_channel)
-
-
-class Suggestion:
-    def __init__(self, votes, name, url="", author=None):
-        self.votes = votes
-        self.name = name
-        self.url = url
-        self.author = author
-
-    def __str__(self):
-        return self.name + ": " + str(self.votes) + " votes " + self.url + " by " + str(self.author)
+            embed_match = re.search(r'embed', message.content)
+            if embed_match:
+                embed=discord.Embed(title="------------------ GUILD INFO ------------------",
+                                    description="Welcome to Lore! Below you will find all major guild information or \
+                                     at least where to find it.", color=0x008000, type="rich")
+                embed.set_author(name="Rhino?#3873",
+                                 icon_url="https://i.pinimg.com/originals/bd/19/17/bd19171b187a13f54e70c7384a1f0a4f.jpg")
+                embed.add_field(name="Sixty Upgrades", value="Go to the #sixtyupgrades channel and follow the \
+                                                             instructions there.", inline=False)
+                embed.add_field(name="Guild Bank", value="Gb Toon: Lorebank", inline=False)
+                embed.add_field(name="https://classicguildbank.com/#/guild/readonly/qlMT6AqHXUOeewBll2gycw",
+                                value="This will show you what is in our guild bank. Talk to Hugsnotdrugs to request \
+                                 items.", inline=False)
+                embed.add_field(name="Raid Logs", value="https://classic.warcraftlogs.com/", inline=True)
+                embed.add_field(name="\U0000FEFF", value="Create an account and reach out to @Hider with your Account name to \
+                                be able to see our logs.", inline=True)
+                embed.add_field(name="Required Guild Addons", value="\U0000FEFF", inline=False)
+                embed.add_field(name="\U0000FEFF", value="Group/Guild Calendar for Classic: \
+                                https://www.curseforge.com/wow/addons/group-calendar-for-classic", inline=False)
+                embed.add_field(name="\U0000FEFF", value="RCLootCouncil Classic: \
+                                https://www.curseforge.com/wow/addons/rclootcouncil-classic", inline=False)
+                embed.add_field(name="\U0000FEFF", value="DBM: https://www.curseforge.com/wow/addons/deadly-boss-mods",
+                                inline=False)
+                embed.add_field(name="\U0000FEFF", value="Details: https://www.curseforge.com/wow/addons/details",
+                                inline=False)
+                embed.add_field(name="\U0000FEFF", value="\U0000FEFF", inline=False)
+                embed.set_footer(text="footy text")
+                await message.channel.send("testing embedded message...", embed=embed)
+            else:
+                max_results = 10
+                match = re.search(r'top (\d+)', message.content)
+                if match and match.group(1):
+                    max_results = int(match.group(1))
+                from_channel = GUILD_CHANNEL_NAME
+                if message.channel_mentions:
+                    if len(message.channel_mentions) > 1:
+                        message.channel.send("Please only specify 1 channel at a time to get suggestions from.")
+                        return
+                    from_channel = message.channel_mentions[0].name
+                await fetch_suggestions(message.guild, message.channel, max_results, from_channel)
 
 
 if __name__ == "__main__":

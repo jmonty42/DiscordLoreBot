@@ -3,3 +3,4 @@
 token.txt
 master.txt
 venv
+__pycache__
