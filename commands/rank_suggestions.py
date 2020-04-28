@@ -1,0 +1,58 @@
+import discord
+from objects.suggestion import Suggestion
+
+
+async def fetch_suggestions(server, response_channel, max_results, from_channel):
+    suggestion_channel = [channel for channel in server.text_channels if channel.name == from_channel][0]
+    if suggestion_channel:
+        print("Found the channel named " + suggestion_channel.name)
+    else:
+        response_channel.send("Sorry, I couldn't find the channel named \"" + from_channel + "\"")
+        return
+    messages = await suggestion_channel.history(limit=1000).flatten()
+    print("Got messages from that channel.")
+    suggestions = []
+    for message in messages:
+        url = ""
+        if message.embeds:
+            print("Found a message with embeds:")
+            for embed in message.embeds:
+                print("\tTitle: " + embed.title)
+                print("\tType: " + embed.type)
+                print("\tDescription: " + embed.description)
+                print("\turl: " + embed.url)
+                print("\timage: " + str(embed.image))
+                print("\tthumbnail: " + str(embed.thumbnail))
+        if message.attachments:
+            print("Found a message with attachments:")
+            for attachment in message.attachments:
+                print("\turl: " + attachment.url)
+                url = attachment.url
+        author = message.author
+        count = 0
+        voters = set()
+        for reaction in message.reactions:
+            if str(reaction) != "\U0001F44E":
+                users = await reaction.users().flatten()
+                voters_count = len(voters)
+                voters = voters.union(set(users))
+                count += len(voters) - voters_count
+        suggestions.append(Suggestion(count, message.content, url, author))
+    suggestions.sort(key=lambda suggestion: suggestion.votes, reverse=True)
+    for rank in range(len(suggestions)):
+        response_string = str(rank + 1) + ": from " + suggestions[rank].author.mention
+        if not suggestions[rank].url:
+            response_string += ": " + suggestions[rank].name
+        response_string += ": (" + str(suggestions[rank].votes) + " votes)\n "
+
+        if suggestions[rank].url:
+            embed = discord.Embed(type="rich")
+            embed.set_image(url=suggestions[rank].url)
+            await response_channel.send(response_string, embed=embed)
+        else:
+            await response_channel.send(response_string)
+
+        if rank + 1 >= max_results:
+            break
+    if len(suggestions) < 1:
+        await response_channel.send("Something went wrong trying to get the suggestions, sorry.")

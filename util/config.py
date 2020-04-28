@@ -5,6 +5,7 @@ class Config:
     TOKEN_FILE_NAME = "token.txt"
     MASTER_FILE_NAME = "master.txt"
     CONFIG_YAML_FILE_NAME = "config.yml"
+    SUGGESTION_CHANNEL_NAME = "guild-names"
 
     def __init__(self):
         self.master_id = ""
