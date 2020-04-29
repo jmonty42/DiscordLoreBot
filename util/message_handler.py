@@ -7,6 +7,10 @@ async def handle_message(message, client, config):
     if message.author == client.user:
         return
 
+    if isinstance(message.channel, discord.DMChannel):
+        await message.channel.send("I don't support DMs yet.")
+        return
+    
     if client.user in message.mentions:
         async with message.channel.typing():
             if message.author.id != config.get_master_id():
