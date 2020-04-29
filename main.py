@@ -27,9 +27,12 @@ async def on_ready():
     print("We have logged in as {0.user}".format(client))
     for server in client.guilds:
         print("Connected to the server \"" + server.name + "\" (id: " + str(server.id) + ")")
-        print("Other users on this server:")
+        print("\tOther users on this server:")
         for user in server.members:
-            print(user.display_name + " (id: " + str(user.id) + ")")
+            print("\t\t" + user.display_name + " (id: " + str(user.id) + ")")
+        print("\tRoles on this server:")
+        for role in server.roles:
+            print("\t\t" + role.name + " (id: " + str(role.id) + ")")
 
 
 @client.event
