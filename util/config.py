@@ -7,11 +7,38 @@ class Config:
     CONFIG_YAML_FILE_NAME = "config.yml"
     SUGGESTION_CHANNEL_NAME = "guild-names"
 
+    @classmethod
+    def config_factory(cls):
+        try:
+            with open(cls.CONFIG_YAML_FILE_NAME, 'r') as yaml_file:
+                print("Initializing config from " + cls.CONFIG_YAML_FILE_NAME)
+                return yaml.load(yaml_file, Loader=yaml.FullLoader)
+        except FileNotFoundError:
+            print(cls.CONFIG_YAML_FILE_NAME + " does not exist, initializing the config without it.")
+        config = cls()
+        try:
+            with open(cls.TOKEN_FILE_NAME, 'r') as token_file:
+                config.set_token(token_file.readline().rstrip())
+        except FileNotFoundError:
+            print(cls.TOKEN_FILE_NAME + " does not exist, cannot initialize config.")
+            raise
+        try:
+            with open(cls.MASTER_FILE_NAME, 'r') as master_file:
+                config.set_master_id(int(master_file.readline().rstrip()))
+        except FileNotFoundError:
+            print(cls.MASTER_FILE_NAME + " does not exist, cannot initialize config.")
+            raise
+        return config
+
     def __init__(self):
         self.master_id = ""
         self.token = ""
         self.authorized_user_ids = set()
         self.authorized_roles = set()
+
+    def save_to_file(self):
+        with open(self.CONFIG_YAML_FILE_NAME, 'w') as config_output:
+            yaml.dump(self, config_output)
 
     def set_master_id(self, id):
         self.master_id = id
@@ -54,26 +81,3 @@ class Config:
 
     def get_authorized_roles(self):
         return self.authorized_roles
-
-    @classmethod
-    def config_factory(cls):
-        try:
-            with open(cls.CONFIG_YAML_FILE_NAME, 'r') as yaml_file:
-                print("Initializing config from " + cls.CONFIG_YAML_FILE_NAME)
-                return yaml.load(yaml_file, Loader=yaml.FullLoader)
-        except FileNotFoundError:
-            print(cls.CONFIG_YAML_FILE_NAME + " does not exist, initializing the config without it.")
-        config = cls()
-        try:
-            with open(cls.TOKEN_FILE_NAME, 'r') as token_file:
-                config.set_token(token_file.readline().rstrip())
-        except FileNotFoundError:
-            print(cls.TOKEN_FILE_NAME + " does not exist, cannot initialize config.")
-            raise
-        try:
-            with open(cls.MASTER_FILE_NAME, 'r') as master_file:
-                config.set_master_id(int(master_file.readline().rstrip()))
-        except FileNotFoundError:
-            print(cls.MASTER_FILE_NAME + " does not exist, cannot initialize config.")
-            raise
-        return config

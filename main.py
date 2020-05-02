@@ -1,7 +1,5 @@
 #! /usr/bin/env python3
 
-import os
-import yaml
 from util.config import Config
 from util.message_handler import *
 
@@ -15,9 +13,7 @@ def main():
     configuration = Config.config_factory()
     print("My master's user id is " + str(configuration.get_master_id()))
 
-    if not os.path.isfile(configuration.CONFIG_YAML_FILE_NAME):
-        with open(configuration.CONFIG_YAML_FILE_NAME, 'w') as config_output:
-            yaml.dump(configuration, config_output)
+    configuration.save_to_file()
 
     client.run(configuration.get_token())
 

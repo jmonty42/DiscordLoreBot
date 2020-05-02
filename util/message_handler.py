@@ -4,6 +4,7 @@ from commands.authorize import authorize
 from commands.inspect import inspect
 from commands.rank_suggestions import fetch_suggestions
 from commands.send_embed import embed_test
+from commands.unauthorize import unauthorize
 
 
 async def handle_message(message, client, config):
@@ -37,6 +38,10 @@ async def handle_message(message, client, config):
             auth_match = re.search(r'\bauthorize', message.content)
             if auth_match:
                 await authorize(message, config, client.user)
+                return
+            unauth_match = re.search(r'\bunauthorize', message.content)
+            if unauth_match:
+                await unauthorize(message, config, client.user)
                 return
             await message.channel.send("Sorry, I'm not sure what you want me to do.")
             print("Finished processing the message...")
