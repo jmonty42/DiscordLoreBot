@@ -2,7 +2,18 @@ import discord
 from objects.suggestion import Suggestion
 
 
-async def fetch_suggestions(server, response_channel, max_results, from_channel):
+async def fetch_suggestions(message, match, config):
+    server = message.guild
+    response_channel = message.channel
+    max_results = 10
+    if match.group(1):
+        max_results = int(match.group(1))
+    from_channel = config.SUGGESTION_CHANNEL_NAME
+    if message.channel_mentions:
+        if len(message.channel_mentions) > 1:
+            await message.channel.send("Please only specify 1 channel at a time to get suggestions from.")
+            return
+        from_channel = message.channel_mentions[0].name
     suggestion_channel = [channel for channel in server.text_channels if channel.name == from_channel][0]
     if suggestion_channel:
         print("Found the channel named " + suggestion_channel.name)
