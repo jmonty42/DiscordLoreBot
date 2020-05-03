@@ -13,9 +13,10 @@ async def inspect(message: discord.Message, config: Config):
             await message.channel.send("Please only specify 1 channel at a time to inspect.")
             return
         inspect_channel = message.channel_mentions[0]
-    #async for message in inspect_channel.history(limit=20):
-        #print (str(message.id) + ": from " + message.author.name)
-    messages = [704931310212481035, 704929763755687978, 704929069778731008, 704928607814025236]
+    async for message in inspect_channel.history(limit=20):
+        print (str(message.id) + ": from " + message.author.name)
+    messages = [704931310212481035, 704929763755687978, 704929069778731008, 704928607814025236, 706390995385843732,
+                706390868377993237]
     for message_id in messages:
         bot_message = await message.channel.fetch_message(message_id)
         print(str(bot_message.id) + " at " + str(bot_message.created_at) + ":")
