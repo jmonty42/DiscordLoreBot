@@ -1,9 +1,14 @@
 import discord
 from objects.suggestion import Suggestion
+from util.authorization import is_user_authorized_on_server
+from util.config import Config
 
 
-async def fetch_suggestions(message, match, config):
+async def fetch_suggestions(message: discord.Message, match, config: Config):
     server = message.guild
+    if not is_user_authorized_on_server(message.author, server, config):
+        await message.channel.send("I don't answer to you!")
+        return
     response_channel = message.channel
     max_results = 10
     if match.group(1):

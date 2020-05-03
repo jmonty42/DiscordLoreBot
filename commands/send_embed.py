@@ -1,6 +1,12 @@
 import discord
+from util.authorization import is_user_authorized_on_server
+from util.config import Config
 
-async def embed_test(message):
+
+async def embed_test(message: discord.Message, config: Config):
+    if not is_user_authorized_on_server(message.author, message.guild, config):
+        await message.channel.send("You can't do that.")
+        return
     embed=discord.Embed(title="------------------ GUILD INFO ------------------",
                         description="Welcome to Lore! Below you will find all major guild information or \
                                      at least where to find it.", color=0x008000, type="rich")

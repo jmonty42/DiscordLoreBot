@@ -6,6 +6,8 @@ class Config:
     MASTER_FILE_NAME = "master.txt"
     CONFIG_YAML_FILE_NAME = "config.yml"
     SUGGESTION_CHANNEL_NAME = "guild-names"
+    USERS_KEY = "users"
+    ROLES_KEY = "roles"
 
     @classmethod
     def config_factory(cls):
@@ -31,53 +33,91 @@ class Config:
         return config
 
     def __init__(self):
-        self.master_id = ""
-        self.token = ""
-        self.authorized_user_ids = set()
-        self.authorized_roles = set()
+        self._master_id = ""
+        self._token = ""
+        self._authorizations_by_server = {}
 
     def save_to_file(self):
         with open(self.CONFIG_YAML_FILE_NAME, 'w') as config_output:
             yaml.dump(self, config_output)
 
-    def set_master_id(self, id):
-        self.master_id = id
+    def set_master_id(self, master_id):
+        self._master_id = master_id
 
     def get_master_id(self):
-        return self.master_id
+        return self._master_id
 
     def set_token(self, token):
-        self.token = token
+        self._token = token
 
     def get_token(self):
-        return self.token
+        return self._token
 
-    def add_authorized_user_id(self, id):
-        if id in self.authorized_user_ids:
-            return False
-        self.authorized_user_ids.add(id)
-        return True
-
-    def delete_authorized_user_id(self, id):
-        if id in self.authorized_user_ids:
-            self.authorized_user_ids.remove(id)
+    def add_authorized_user_to_server(self, user_id, server_id):
+        if server_id in self._authorizations_by_server:
+            if user_id in self._authorizations_by_server[server_id][self.USERS_KEY]:
+                return False
+            self._authorizations_by_server[server_id][self.USERS_KEY].add(user_id)
+            self.save_to_file()
             return True
+        # TODO: throw an exception for bad server id
         return False
 
-    def get_authorized_user_ids(self):
-        return self.authorized_user_ids
-
-    def add_authorized_role_id(self, id):
-        if id in self.authorized_roles:
+    def delete_authorized_user_from_server(self, user_id, server_id):
+        if server_id in self._authorizations_by_server:
+            if user_id in self._authorizations_by_server[server_id][self.USERS_KEY]:
+                self._authorizations_by_server[server_id][self.USERS_KEY].remove(user_id)
+                self.save_to_file()
+                return True
             return False
-        self.authorized_roles.add(id)
-        return True
-
-    def delete_authorized_role_id(self, id):
-        if id in self.authorized_roles:
-            self.authorized_roles.remove(id)
-            return True
+        # TODO: throw an exception for bad server id
         return False
 
-    def get_authorized_roles(self):
-        return self.authorized_roles
+    def get_authorized_users_for_server(self, server_id):
+        if server_id in self._authorizations_by_server:
+            return self._authorizations_by_server[server_id][self.USERS_KEY]
+        # TODO: throw an exception for bad server id
+        return set()
+
+    def add_authorized_role_to_server(self, role_id, server_id):
+        if server_id in self._authorizations_by_server:
+            if role_id in self._authorizations_by_server[server_id][self.ROLES_KEY]:
+                return False
+            self._authorizations_by_server[server_id][self.ROLES_KEY].add(role_id)
+            self.save_to_file()
+            return True
+        # TODO: throw an exception for bad server id
+        return False
+
+    def delete_authorized_role_from_server(self, role_id, server_id):
+        if server_id in self._authorizations_by_server:
+            if role_id in self._authorizations_by_server[server_id][self.ROLES_KEY]:
+                self._authorizations_by_server[server_id][self.ROLES_KEY].remove(role_id)
+                self.save_to_file()
+                return True
+            return False
+        # TODO: throw an exception for bad server id
+        return False
+
+    def get_authorized_roles_for_server(self, server_id):
+        if server_id in self._authorizations_by_server:
+            return self._authorizations_by_server[server_id][self.ROLES_KEY]
+        # TODO: throw an exception for bad server id
+        return set()
+
+    def get_servers_with_authorizations(self):
+        return set(self._authorizations_by_server.keys())
+
+    def initialize_authorizations_for_server(self, server_id):
+        if server_id not in self._authorizations_by_server:
+            self._authorizations_by_server[server_id] = {}
+            self._authorizations_by_server[server_id][self.USERS_KEY] = set()
+            self._authorizations_by_server[server_id][self.ROLES_KEY] = set()
+            self.save_to_file()
+        # TODO: throw an exception for bad server id
+
+    def delete_authorizations_for_server(self, server_id):
+        if server_id in self._authorizations_by_server:
+            del(self._authorizations_by_server[server_id])
+            self.save_to_file()
+        # TODO: throw an exception for bad server id

@@ -5,9 +5,10 @@ from commands.inspect import inspect
 from commands.rank_suggestions import fetch_suggestions
 from commands.send_embed import embed_test
 from commands.unauthorize import unauthorize
+from util.config import Config
 
 
-async def handle_message(message, client, config):
+async def handle_message(message: discord.Message, client: discord.Client, config: Config):
     if message.author == client.user:
         return
 
@@ -25,7 +26,7 @@ async def handle_message(message, client, config):
             print("My master is talking to me on the " + message.guild.name + " server.")
             embed_match = re.search(r'\bembed', message.content)
             if embed_match:
-                await embed_test(message)
+                await embed_test(message, config)
                 return
             top_match = re.search(r'\btop\s*(\d+)*', message.content)
             if top_match:
