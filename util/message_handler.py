@@ -30,7 +30,7 @@ async def handle_message(message: discord.Message, client: discord.Client, confi
                 return
             inspect_match = re.search(r'inspect', message.content)
             if inspect_match:
-                await inspect(message)
+                await inspect(message, config)
                 return
             auth_match = re.search(r'\bauthorize', message.content)
             if auth_match:
