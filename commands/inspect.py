@@ -3,7 +3,11 @@ from util.authorization import is_user_authorized_on_server
 from util.config import Config
 
 
-async def inspect(message: discord.Message, config: Config):
+async def inspect(**kwargs):
+    # TODO: parameter validation
+    message: discord.Message = kwargs["message"]
+    config: Config = kwargs["config"]
+
     if not is_user_authorized_on_server(message.author, message.guild, config):
         await message.channel.send("This is a debugging command and you're not authorized to use it.")
         return

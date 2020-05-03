@@ -1,11 +1,11 @@
 #! /usr/bin/env python3
 
-from util.config import Config
+from util.command_list import initialize_command_list
 from util.message_handler import *
 
 client = discord.Client()
-configuration: Config
-configuration = None
+command_list = initialize_command_list()
+configuration: Config = None
 
 
 def main():
@@ -58,7 +58,7 @@ async def on_guild_remove(guild):
 
 @client.event
 async def on_message(message):
-    await handle_message(message, client, configuration)
+    await handle_message(message, client, configuration, command_list)
 
 if __name__ == "__main__":
     main()

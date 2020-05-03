@@ -3,7 +3,12 @@ from util.authorization import is_user_authorized_on_server
 from util.config import Config
 
 
-async def unauthorize(message: discord.Message, config: Config, bot_user: discord.User):
+async def unauthorize(**kwargs):
+    # TODO: parameter validation
+    message: discord.Message = kwargs["message"]
+    config: Config = kwargs["config"]
+    bot_user: discord.User = kwargs["bot_user"]
+
     if not is_user_authorized_on_server(message.author, message.guild, config):
         await message.channel.send("You are not authorized to unauthorize people.")
         return

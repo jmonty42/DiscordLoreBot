@@ -3,10 +3,23 @@ from util.authorization import is_user_authorized_on_server
 from util.config import Config
 
 
-async def authorize(message: discord.Message, config: Config, bot_user: discord.User):
+async def authorize(**kwargs):
+    if "message" not in kwargs:
+        print("Error in authorize: no message parameter given.")
+        return
+    message: discord.Message = kwargs["message"]
+    if "config" not in kwargs:
+        print("Error in authorize: no config parameter given.")
+        return
+    config: Config = kwargs["config"]
+    if "bot_user" not in kwargs:
+        print("Error in authorize: no bot_user parameter given.")
+    bot_user: discord.User = kwargs["bot_user"]
+
     if not is_user_authorized_on_server(message.author, message.guild, config):
         await message.channel.send("You are not authorized to authorize people.")
         return
+
     mentioned = False
     if message.role_mentions:
         mentioned = True

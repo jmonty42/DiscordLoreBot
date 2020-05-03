@@ -1,10 +1,16 @@
 import discord
+import re
 from objects.suggestion import Suggestion
 from util.authorization import is_user_authorized_on_server
 from util.config import Config
 
 
-async def fetch_suggestions(message: discord.Message, match, config: Config):
+async def fetch_suggestions(**kwargs):
+    # TODO parameter validation
+    message: discord.Message = kwargs["message"]
+    match: re.Match = kwargs["match"]
+    config: Config = kwargs["config"]
+
     server = message.guild
     if not is_user_authorized_on_server(message.author, server, config):
         await message.channel.send("I don't answer to you!")
