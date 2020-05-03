@@ -20,10 +20,6 @@ async def handle_message(message: discord.Message, client: discord.Client, confi
         async with message.channel.typing():
             print("Message received was:")
             print(message.content)
-            if message.author.id != config.get_master_id():
-                await message.channel.send("I don't answer to you!")
-                return
-            print("My master is talking to me on the " + message.guild.name + " server.")
             embed_match = re.search(r'\bembed', message.content)
             if embed_match:
                 await embed_test(message, config)
