@@ -2,6 +2,7 @@ import discord
 import re
 from commands.authorize import authorize
 from commands.inspect import inspect
+from commands.list import list
 from commands.rank_suggestions import fetch_suggestions
 from commands.send_embed import embed_test
 from commands.unauthorize import unauthorize
@@ -20,6 +21,10 @@ async def handle_message(message: discord.Message, client: discord.Client, confi
         async with message.channel.typing():
             print("Message received was:")
             print(message.content)
+            list_match = re.search(r'\blist\b', message.content)
+            if list_match:
+                await list(message)
+                return
             embed_match = re.search(r'\bembed', message.content)
             if embed_match:
                 await embed_test(message, config)

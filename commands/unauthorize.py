@@ -5,7 +5,7 @@ from util.config import Config
 
 async def unauthorize(message: discord.Message, config: Config, bot_user: discord.User):
     if not is_user_authorized_on_server(message.author, message.guild, config):
-        await message.channel.send("You are not authorized to authorize people.")
+        await message.channel.send("You are not authorized to unauthorize people.")
         return
     mentioned = False
     if message.role_mentions:
