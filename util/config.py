@@ -53,8 +53,18 @@ class Config:
     def get_token(self):
         return self.__token
 
-    def add_authorized_user_to_server(self, user_id, server_id):
+    def add_authorized_user_to_server(self, user_id, server_id, command=""):
         if server_id in self.__authorizations_by_server:
+            if command:
+                if command not in self.__authorizations_by_server[server_id]:
+                    self.__authorizations_by_server[server_id][command] = {}
+                    self.__authorizations_by_server[server_id][command][self.USERS_KEY] = set()
+                    self.__authorizations_by_server[server_id][command][self.ROLES_KEY] = set()
+                if user_id in self.__authorizations_by_server[server_id][command][self.USERS_KEY]:
+                    return False
+                self.__authorizations_by_server[server_id][command][self.USERS_KEY].add(user_id)
+                self.save_to_file()
+                return True
             if user_id in self.__authorizations_by_server[server_id][self.USERS_KEY]:
                 return False
             self.__authorizations_by_server[server_id][self.USERS_KEY].add(user_id)
@@ -63,8 +73,19 @@ class Config:
         # TODO: throw an exception for bad server id
         return False
 
-    def delete_authorized_user_from_server(self, user_id, server_id):
+    def delete_authorized_user_from_server(self, user_id, server_id, command=""):
         if server_id in self.__authorizations_by_server:
+            if command:
+                if command not in self.__authorizations_by_server[server_id]:
+                    return False
+                if user_id in self.__authorizations_by_server[server_id][command][self.USERS_KEY]:
+                    self.__authorizations_by_server[server_id][command][self.USERS_KEY].remove(user_id)
+                    if not self.__authorizations_by_server[server_id][command][self.USERS_KEY] and \
+                            not self.__authorizations_by_server[server_id][command][self.ROLES_KEY]:
+                        self.__authorizations_by_server[server_id].pop(command)
+                    self.save_to_file()
+                    return True
+                return False
             if user_id in self.__authorizations_by_server[server_id][self.USERS_KEY]:
                 self.__authorizations_by_server[server_id][self.USERS_KEY].remove(user_id)
                 self.save_to_file()
@@ -73,14 +94,26 @@ class Config:
         # TODO: throw an exception for bad server id
         return False
 
-    def get_authorized_users_for_server(self, server_id):
+    def get_authorized_users_for_server(self, server_id, command=""):
         if server_id in self.__authorizations_by_server:
+            if command and command in self.__authorizations_by_server[server_id]:
+                return self.__authorizations_by_server[server_id][command][self.USERS_KEY]
             return self.__authorizations_by_server[server_id][self.USERS_KEY]
         # TODO: throw an exception for bad server id
         return set()
 
-    def add_authorized_role_to_server(self, role_id, server_id):
+    def add_authorized_role_to_server(self, role_id, server_id, command=""):
         if server_id in self.__authorizations_by_server:
+            if command:
+                if command not in self.__authorizations_by_server[server_id]:
+                    self.__authorizations_by_server[server_id][command] = {}
+                    self.__authorizations_by_server[server_id][command][self.USERS_KEY] = set()
+                    self.__authorizations_by_server[server_id][command][self.ROLES_KEY] = set()
+                if role_id in self.__authorizations_by_server[server_id][command][self.ROLES_KEY]:
+                    return False
+                self.__authorizations_by_server[server_id][command][self.ROLES_KEY].add(role_id)
+                self.save_to_file()
+                return True
             if role_id in self.__authorizations_by_server[server_id][self.ROLES_KEY]:
                 return False
             self.__authorizations_by_server[server_id][self.ROLES_KEY].add(role_id)
@@ -89,8 +122,19 @@ class Config:
         # TODO: throw an exception for bad server id
         return False
 
-    def delete_authorized_role_from_server(self, role_id, server_id):
+    def delete_authorized_role_from_server(self, role_id, server_id, command=""):
         if server_id in self.__authorizations_by_server:
+            if command:
+                if command not in self.__authorizations_by_server[server_id]:
+                    return False
+                if role_id in self.__authorizations_by_server[server_id][command][self.ROLES_KEY]:
+                    self.__authorizations_by_server[server_id][command][self.ROLES_KEY].remove(role_id)
+                    if not self.__authorizations_by_server[server_id][command][self.USERS_KEY] and \
+                            not self.__authorizations_by_server[server_id][command][self.ROLES_KEY]:
+                        self.__authorizations_by_server[server_id].pop(command)
+                    self.save_to_file()
+                    return True
+                return False
             if role_id in self.__authorizations_by_server[server_id][self.ROLES_KEY]:
                 self.__authorizations_by_server[server_id][self.ROLES_KEY].remove(role_id)
                 self.save_to_file()
@@ -99,8 +143,10 @@ class Config:
         # TODO: throw an exception for bad server id
         return False
 
-    def get_authorized_roles_for_server(self, server_id):
+    def get_authorized_roles_for_server(self, server_id, command=""):
         if server_id in self.__authorizations_by_server:
+            if command and command in self.__authorizations_by_server[server_id]:
+                return self.__authorizations_by_server[server_id][command][self.ROLES_KEY]
             return self.__authorizations_by_server[server_id][self.ROLES_KEY]
         # TODO: throw an exception for bad server id
         return set()
