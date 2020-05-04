@@ -53,6 +53,8 @@ async def authorize(**kwargs):
                     unauthorizes_in_message += 1
                     if unauthorizes_in_message == 2:
                         commands_in_message.add(word)
+                else:
+                    commands_in_message.add(word)
             else:
                 print("Adding to the commands_in_message set")
                 commands_in_message.add(word)
