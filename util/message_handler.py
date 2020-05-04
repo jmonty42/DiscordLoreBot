@@ -3,6 +3,7 @@ import re
 from typing import List
 
 from objects.command import Command
+from util.authorization import is_user_authorized_on_server
 from util.config import Config
 
 
@@ -22,6 +23,11 @@ async def handle_message(message: discord.Message, client: discord.Client, confi
                 match = re.search(command.regex, message.content)
                 if match:
                     print("Handling message as the '" + command.name + "' command.")
+                    if not is_user_authorized_on_server(message.author, message.guild, config, command):
+                        response_string = command.not_authorized if command.not_authorized \
+                            else "You are not authorized to do that."
+                        await message.channel.send(response_string)
+                        return
                     await command.method(
                         message=message,
                         config=config,

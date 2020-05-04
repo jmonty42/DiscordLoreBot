@@ -1,36 +1,26 @@
 import discord
 import re
 from objects.suggestion import Suggestion
-from util.authorization import is_user_authorized_on_server
-from util.config import Config
 
 
 async def fetch_suggestions(**kwargs):
     # TODO parameter validation
     message: discord.Message = kwargs["message"]
     match: re.Match = kwargs["match"]
-    config: Config = kwargs["config"]
 
-    server = message.guild
-    if not is_user_authorized_on_server(message.author, server, config):
-        await message.channel.send("I don't answer to you!")
-        return
     response_channel = message.channel
     max_results = 10
     if match.group(1):
         max_results = int(match.group(1))
-    from_channel = config.SUGGESTION_CHANNEL_NAME
+    from_channel: discord.TextChannel = None
     if message.channel_mentions:
-        if len(message.channel_mentions) > 1:
-            await message.channel.send("Please only specify 1 channel at a time to get suggestions from.")
+        if len(message.channel_mentions) != 1:
+            await message.channel.send("Please specify 1 channel to get suggestions from.")
             return
-        from_channel = message.channel_mentions[0].name
-    suggestion_channel = [channel for channel in server.text_channels if channel.name == from_channel][0]
+        from_channel = message.channel_mentions[0]
+    suggestion_channel = from_channel
     if suggestion_channel:
         print("Found the channel named " + suggestion_channel.name)
-    else:
-        response_channel.send("Sorry, I couldn't find the channel named \"" + from_channel + "\"")
-        return
     messages = await suggestion_channel.history(limit=1000).flatten()
     print("Got messages from that channel.")
     suggestions = []

@@ -26,21 +26,24 @@ def initialize_command_list():
 >    Usage:
 >    @LoreBot top 5 #guild-name-suggestions""",
             regex=r'\btop\s*(\d+)*',
-            method=fetch_suggestions
+            method=fetch_suggestions,
+            not_authorized="I don't answer to you!"
         ),
         Command(
             name="embed",
             documentation="",
             regex=r'\bembed',
             method=embed_test,
-            hidden=True
+            hidden=True,
+            not_authorized="You can't do that."
         ),
         Command(
             name="inspect",
             documentation="",
             regex=r'\binspect\b',
             method=inspect,
-            hidden=True
+            hidden=True,
+            not_authorized="This is a debugging command and you're not authorized to use it."
         ),
         Command(
             name="authorize",
@@ -52,7 +55,8 @@ def initialize_command_list():
 >    @LoreBot authorize @MarkSargent top
 >    @LoreBot authorize @Officer""",
             regex=r'\bauthorize',
-            method=authorize
+            method=authorize,
+            not_authorized="You are not authorized to authorize people."
         ),
         Command(
             name="unauthorize",
@@ -63,7 +67,8 @@ def initialize_command_list():
 >    @LoreBot unauthorize @Melkhior authorize
 >    @LoreBot unauthorize @Frauggs""",
             regex=r'\bunauthorize',
-            method=unauthorize
+            method=unauthorize,
+            not_authorized="You are not authorized to unauthorize people."
         )
     ]
     return command_list

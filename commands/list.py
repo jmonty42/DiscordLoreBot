@@ -3,6 +3,7 @@ from typing import List
 
 from objects.command import Command
 
+
 async def list_command(**kwargs):
     # TODO: parameter validation
     message: discord.Message = kwargs["message"]
