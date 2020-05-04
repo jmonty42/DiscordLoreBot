@@ -4,6 +4,7 @@ from commands.list import list_command
 from commands.rank_suggestions import fetch_suggestions
 from commands.send_embed import embed_test
 from commands.unauthorize import unauthorize
+from commands.who import who
 from objects.command import Command
 
 
@@ -11,6 +12,15 @@ def initialize_command_list():
     # The order of commands in the list is precedence that commands will trigger on a message that contains more than
     # one command keyword. This is important for commands that operate on other commands like authorize.
     command_list = [
+        Command(
+            name="who",
+            documentation="""> who
+>    Shows who has permission to run a command.
+>    Usage:
+>    @LoreBot who (command)""",
+            regex=r'\bwho\b',
+            method=who
+        ),
         Command(
             name="list",
             documentation="""> list

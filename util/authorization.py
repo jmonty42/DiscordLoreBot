@@ -4,7 +4,7 @@ from util.config import Config
 
 
 def is_user_authorized_on_server(user: discord.Member, server: discord.Guild, config: Config, command: Command):
-    if command.name == "list":
+    if command.name == "list" or command.name == "who":
         return True
     user_id = user.id
     server_id = server.id

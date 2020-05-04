@@ -167,3 +167,11 @@ class Config:
             del(self.__authorizations_by_server[server_id])
             self.save_to_file()
         # TODO: throw an exception for bad server id
+
+    def specific_authorizations_on_server_for_command(self, server_id, command):
+        if server_id in self.__authorizations_by_server:
+            print(str(self.__authorizations_by_server[server_id]))
+            print(command in self.__authorizations_by_server[server_id])
+            return command in self.__authorizations_by_server[server_id]
+        # TODO: throw an excception for bad server id
+        return False
