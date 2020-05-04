@@ -44,7 +44,7 @@ async def authorize(**kwargs):
                 else:
                     print("Did not add it, because it was the first authorize found in an authorize command.")
             elif word == "unauthorize":
-                if authorizes_in_message == 0:
+                if authorizes_in_message == 0 and not unauthorize:
                     # "unauthorize" appears before "authorize" in the message, so this is actually an unauthorize
                     # command
                     print("This authorize command is actually an unauthorize command, oops!")

@@ -31,7 +31,8 @@ def initialize_command_list():
 >    @LoreBot authorize @Officer""",
             regex=r'\bauthorize',
             method=authorize,
-            not_authorized="You are not authorized to authorize people."
+            not_authorized="You are not authorized to authorize people.",
+            check_defer=True
         ),
         Command(
             name="unauthorize",
