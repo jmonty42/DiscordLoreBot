@@ -29,10 +29,10 @@ async def fetch_suggestions(**kwargs):
         if message.embeds:
             print("Found a message with embeds:")
             for embed in message.embeds:
-                print("\tTitle: " + embed.title)
-                print("\tType: " + embed.type)
-                print("\tDescription: " + embed.description)
-                print("\turl: " + embed.url)
+                print("\tTitle: " + embed.title if isinstance(embed.title, str) else "(none)")
+                print("\tType: " + embed.type if isinstance(embed.type, str) else "(none)")
+                print("\tDescription: " + embed.description if isinstance(embed.description, str) else "(none)")
+                print("\turl: " + embed.url if isinstance(embed.description, str) else "(none)")
                 print("\timage: " + str(embed.image))
                 print("\tthumbnail: " + str(embed.thumbnail))
         if message.attachments:
