@@ -38,7 +38,7 @@ async def who(**kwargs):
                 break
             role_names = [message.guild.get_role(role_id).name for role_id in authorized_roles
                           if message.guild.get_role(role_id)]
-            user_names = [message.guild.get_member(user_id).name for user_id in authorized_users
+            user_names = [message.guild.get_member(user_id).display_name for user_id in authorized_users
                           if message.guild.get_member(user_id)]
             response_text = "There are no specific permissions for the " + command + " command, so the authorized " + \
                 "users and roles are derived from the default permissions for this server.\n" if \

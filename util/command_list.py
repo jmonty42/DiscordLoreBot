@@ -3,6 +3,7 @@ from commands.inspect import inspect
 from commands.list import list_command
 from commands.rank_suggestions import fetch_suggestions
 from commands.send_embed import embed_test
+from commands.summon import summon
 from commands.unauthorize import unauthorize
 from commands.what import what
 from commands.who import who
@@ -33,7 +34,7 @@ def initialize_command_list():
         ),
         Command(
             name="authorize",
-            documentation="""> authorize [@user|@role] (command)
+            documentation="""> authorize @[user|role] (command)
 >    Authorizes the mentioned user or role to use the specified command. If no command is given, it authorizes the user
 >    for with the default level of authorization, which is applied to commands that have not had explicit permissions
 >    set.
@@ -47,7 +48,7 @@ def initialize_command_list():
         ),
         Command(
             name="unauthorize",
-            documentation="""> unauthorize [@user|@role] (command)
+            documentation="""> unauthorize @[user|role] (command)
 >    Removes authorization for the mentioned user or role for the specified command or from the default level of
 >    authorization if no command was specified. This will not take away the user's authorization if that authorization
 >    is granted through a role they are a member of.
@@ -57,6 +58,17 @@ def initialize_command_list():
             regex=r'\bunauthorize',
             method=unauthorize,
             not_authorized="You are not authorized to unauthorize people."
+        ),
+        Command(
+            name="summon",
+            documentation="""> summon @[user|role]
+>    Moves the specified users or roles to your voice channel. This will not move someone out of afk.
+>    Usage:
+>    @LoreBot summon @Member
+>    @LoreBot summon @Doragoon356""",
+            regex=r'\bsummon\b',
+            method=summon,
+            not_authorized="Sorry, I can't summon for you."
         ),
         Command(
             name="top",
