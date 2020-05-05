@@ -175,3 +175,13 @@ class Config:
             return command in self.__authorizations_by_server[server_id]
         # TODO: throw an excception for bad server id
         return False
+
+    def does_server_have_authorizations_configured(self, server_id):
+        if server_id in self.__authorizations_by_server:
+            user_set_empty = not self.__authorizations_by_server[server_id][self.USERS_KEY]
+            role_set_empty = not self.__authorizations_by_server[server_id][self.ROLES_KEY]
+            server_has_no_command_sets = len(self.__authorizations_by_server[server_id]) == 2
+            if user_set_empty and role_set_empty and server_has_no_command_sets:
+                print("Serve has no authorizations configured, returning False")
+                return False
+        return True

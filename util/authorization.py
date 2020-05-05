@@ -14,7 +14,9 @@ def is_user_authorized_on_server(user: discord.Member, server: discord.Guild, co
     for role in user.roles:
         if role.id in authorized_roles:
             return True
-    if not config.get_authorized_users_for_server(server_id) and not authorized_roles:
+    if not config.does_server_have_authorizations_configured(server_id):
         # no authorizations, default to @everyone being authorized
+        print(" ".join([str(server.id), "does not have authorizations configured, so", user.display_name,
+                        "is authorized to use the", command.name, "command"]))
         return True
     return False

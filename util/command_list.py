@@ -4,6 +4,7 @@ from commands.list import list_command
 from commands.rank_suggestions import fetch_suggestions
 from commands.send_embed import embed_test
 from commands.unauthorize import unauthorize
+from commands.what import what
 from commands.who import who
 from objects.command import Command
 
@@ -48,7 +49,8 @@ def initialize_command_list():
             name="unauthorize",
             documentation="""> unauthorize [@user|@role] (command)
 >    Removes authorization for the mentioned user or role for the specified command or from the default level of
->    authorization if no command was specified.
+>    authorization if no command was specified. This will not take away the user's authorization if that authorization
+>    is granted through a role they are a member of.
 >    Usage:
 >    @LoreBot unauthorize @Melkhior authorize
 >    @LoreBot unauthorize @Frauggs""",
@@ -66,6 +68,15 @@ def initialize_command_list():
             regex=r'\btop\s*(\d+)*',
             method=fetch_suggestions,
             not_authorized="I don't answer to you!"
+        ),
+        Command(
+            name="what",
+            documentation="""> what
+>    Shows what commands a user or role can use.
+>    Usage:
+>    @LoreBot who @[user|role]""",
+            regex=r'\bwhat\b',
+            method=what
         ),
         Command(
             name="embed",
