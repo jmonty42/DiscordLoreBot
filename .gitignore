@@ -5,3 +5,4 @@ master.txt
 venv
 __pycache__
 config.yml
+*.log
