@@ -1,5 +1,5 @@
+import asyncio
 import discord
-from time import sleep
 from typing import Set
 
 
@@ -29,7 +29,7 @@ async def summon(**kwargs):
     for role in message.role_mentions:
         requested_users = requested_users.union(set(role.members))
 
-    summons = 0
+    summon_task_args = []
     for user in requested_users:
         if not user.voice:
             continue
@@ -37,27 +37,36 @@ async def summon(**kwargs):
             continue
         if user.voice.afk:
             continue
-        attempt = 0
-        max_retries = 3
-        reason_string = " ".join(["Summoned by", message.author.display_name, "with LoreBot."])
-        while attempt < max_retries:
-            try:
-                await user.move_to(summon_channel, reason=reason_string)
-                summons += 1
-                sleep(0.25)
-                break
-            except discord.Forbidden as error:
-                await message.channel.send("I couldn't move " + user.display_name + " from " + user.voice.channel.name
-                                           + " because I don't have the right permissions.")
-                print("Got forbidden error when trying to move " + user.display_name + " from " +
-                      user.voice.channel.name + " to " + summon_channel.name)
-                print("Forbidden message: " + error.text)
-                break
-            except discord.HTTPException:
-                print("Got HTTPException when trying to summon " + user.display_name)
-                attempt += 1
+        summon_task_args.append((message, user, summon_channel))
+
+    results = await asyncio.gather(*[summon_user_task(*args) for args in summon_task_args], return_exceptions=True)
+    summons = 0
+    for result in results:
+        if isinstance(result, int):
+            summons += result
 
     if summons > 0:
         await message.channel.send("Summoning complete. Did it work?")
     else:
         await message.channel.send("I didn't summon anyone, maybe they were offline or afk?")
+
+
+async def summon_user_task(message: discord.Message, user: discord.Member, summon_channel: discord.VoiceChannel):
+    attempt = 0
+    max_retries = 3
+    reason_string = " ".join(["Summoned by", message.author.display_name, "with LoreBot."])
+    while attempt < max_retries:
+        try:
+            await user.move_to(summon_channel, reason=reason_string)
+            return 1
+        except discord.Forbidden as error:
+            await message.channel.send("I couldn't move " + user.display_name + " from " + user.voice.channel.name
+                                       + " because I don't have the right permissions.")
+            print("Got forbidden error when trying to move " + user.display_name + " from " +
+                  user.voice.channel.name + " to " + summon_channel.name)
+            print("Forbidden message: " + error.text)
+            return 0
+        except discord.HTTPException:
+            print("Got HTTPException when trying to summon " + user.display_name)
+            attempt += 1
+    return 0
