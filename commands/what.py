@@ -18,7 +18,7 @@ async def what(**kwargs):
     for role in message.role_mentions:
         commands_authorized_for = [command.name for command in command_list if role.id in
                                    config.get_authorized_roles_for_server(message.guild.id, command.name) or
-                                   command.name == "who" or command.name == "list"]
+                                   command.name == "who" or command.name == "list" or command.name == "what"]
         # commands_authorized_for = []
         # for command in command_list:
         #    if command.name == "who" or command.name == "list":

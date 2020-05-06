@@ -36,8 +36,7 @@ def initialize_command_list():
             name="authorize",
             documentation="""> authorize @[user|role] (command)
 >    Authorizes the mentioned user or role to use the specified command. If no command is given, it authorizes the user
->    for with the default level of authorization, which is applied to commands that have not had explicit permissions
->    set.
+>    with the default level of authorization, which is applied to commands that have not had explicit permissions set.
 >    Usage:
 >    @LoreBot authorize @MarkSargent top
 >    @LoreBot authorize @Officer""",
@@ -72,7 +71,7 @@ def initialize_command_list():
         ),
         Command(
             name="top",
-            documentation="""> top (n)
+            documentation="""> top (n) #channel
 >    Finds the top n posts in the mentioned text channel based on reactions from unique users. If n is not specified, 
 >    it defaults to 10. This was used to vote on the guild name and tabard when we formed.
 >    Usage:

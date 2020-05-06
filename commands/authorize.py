@@ -34,6 +34,9 @@ async def authorize(**kwargs):
     for word in message.content.split():
         print("Checking \"" + word + "\" from message...")
         if word in command_set:
+            if word == "list" or word == "what" or word == "who":
+                # don't restrict the use of these commands
+                continue
             print("This is a command word.")
             # "authorize" will appear in every message that triggers the authorize command, so the first instance needs
             # to be filtered out. Same with "unauthorize" for unauthorize commands.
