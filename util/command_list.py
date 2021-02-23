@@ -96,7 +96,7 @@ def initialize_command_list():
             documentation="""> what
 >    Shows what commands a user or role can use.
 >    Usage:
->    @LoreBot who @[user|role]""",
+>    @LoreBot what @[user|role]""",
             regex=r'\bwhat\b',
             method=what
         ),
