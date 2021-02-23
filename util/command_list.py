@@ -1,4 +1,5 @@
 from commands.authorize import authorize
+from commands.clear import clear
 from commands.inspect import inspect
 from commands.list import list_command
 from commands.rank_suggestions import fetch_suggestions
@@ -79,6 +80,16 @@ def initialize_command_list():
             regex=r'\btop\s*(\d+)*',
             method=fetch_suggestions,
             not_authorized="I don't answer to you!"
+        ),
+        Command(
+            name="clear",
+            documentation="""> clear #channel
+>    This will delete all messages in the specified text channel.
+>    Usage:
+>    @LoreBot clear #general""",
+            regex=r'\bclear\b',
+            method=clear,
+            not_authorized="You're not trusted to delete messages."
         ),
         Command(
             name="what",
