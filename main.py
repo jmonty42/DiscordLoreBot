@@ -3,7 +3,9 @@
 from util.command_list import initialize_command_list
 from util.message_handler import *
 
-client = discord.Client()
+intents = discord.Intents.default()
+intents.members = True
+client = discord.Client(intents=intents)
 command_list = initialize_command_list()
 configuration: Config = None
 
@@ -30,11 +32,16 @@ async def on_ready():
             print("Authorizations for this server are not in my configuration, initializing now...")
             configuration.initialize_authorizations_for_server(server.id)
         print("\tOther users on this server:")
-        for user in server.members:
+        members = await server.fetch_members().flatten()
+        for user in members:
             print("\t\t" + user.display_name + " (id: " + str(user.id) + ")")
         print("\tRoles on this server:")
         for role in server.roles:
-            print("\t\t" + role.name + " (id: " + str(role.id) + ")")
+            print("\t\t" + role.name + " (id: " + str(role.id) + ") postion: " + str(role.position))
+            print("\t\t\tmanage_roles: " + str(role.permissions.manage_roles))
+            for user in members:
+                if role in user.roles:
+                    print("\t\t\t" + user.display_name)
     disconnected_server_ids = configuration.get_servers_with_authorizations() - connected_server_ids
     for disconnected_server_id in disconnected_server_ids:
         print("I am no longer a part of the server with the id: " + str(disconnected_server_id))

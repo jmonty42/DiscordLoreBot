@@ -1,7 +1,8 @@
 import yaml
 
 
-class Config:
+class Config(yaml.YAMLObject):
+    yaml_tag = u'!DiscordLoreBotConfig'
     TOKEN_FILE_NAME = "token.txt"
     MASTER_FILE_NAME = "master.txt"
     CONFIG_YAML_FILE_NAME = "config.yml"

@@ -2,6 +2,7 @@ from commands.authorize import authorize
 from commands.clear import clear
 from commands.inspect import inspect
 from commands.list import list_command
+from commands.perms import perms
 from commands.rank_suggestions import fetch_suggestions
 from commands.send_embed import embed_test
 from commands.summon import summon
@@ -113,6 +114,14 @@ def initialize_command_list():
             documentation="",
             regex=r'\binspect\b',
             method=inspect,
+            hidden=True,
+            not_authorized="This is a debugging command and you're not authorized to use it."
+        ),
+        Command(
+            name="perms",
+            documentation="",
+            regex=r'\bperms\b',
+            method=perms,
             hidden=True,
             not_authorized="This is a debugging command and you're not authorized to use it."
         )

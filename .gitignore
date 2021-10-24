@@ -4,5 +4,5 @@ token.txt
 master.txt
 venv
 __pycache__
-config.yml
+config.yml*
 *.log
