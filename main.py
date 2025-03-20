@@ -3,7 +3,9 @@
 from util.command_list import initialize_command_list
 from util.message_handler import *
 
-client = discord.Client()
+intents = discord.Intents.default()
+intents.members = True
+client = discord.Client(intents=intents)
 command_list = initialize_command_list()
 configuration: Config = None
 

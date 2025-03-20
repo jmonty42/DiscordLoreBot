@@ -32,10 +32,10 @@ class Config:
             raise
         return config
 
-    def __init__(self):
-        self.__master_id = ""
-        self.__token = ""
-        self.__authorizations_by_server = {}
+    def __init__(self, master_id: str = "", token: str = "", authorization_by_server = {}):
+        self.__master_id = master_id
+        self.__token = token
+        self.__authorizations_by_server = authorization_by_server
 
     def save_to_file(self):
         with open(self.CONFIG_YAML_FILE_NAME, 'w') as config_output:

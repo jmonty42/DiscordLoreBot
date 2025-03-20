@@ -5,7 +5,7 @@ async def clear(**kwargs):
     # TODO: parameter validation
     message: discord.Message = kwargs["message"]
 
-    channel_list: List[discord.TextChannel] = message.channel_mentions
+    channel_list: List[discord.GuildChannel | discord.Thread] = message.channel_mentions
 
     if len(channel_list) != 1:
         await message.channel.send("You must specify exactly one channel to clear out.")
