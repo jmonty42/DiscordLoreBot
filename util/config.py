@@ -11,12 +11,13 @@ class Config:
 
     @classmethod
     def config_factory(cls):
-        try:
-            with open(cls.CONFIG_YAML_FILE_NAME, 'r') as yaml_file:
-                print("Initializing config from " + cls.CONFIG_YAML_FILE_NAME)
-                return yaml.load(yaml_file, Loader=yaml.FullLoader)
-        except FileNotFoundError:
-            print(cls.CONFIG_YAML_FILE_NAME + " does not exist, initializing the config without it.")
+        # try:
+        #     with open(cls.CONFIG_YAML_FILE_NAME, 'r') as yaml_file:
+        #         print("Initializing config from " + cls.CONFIG_YAML_FILE_NAME)
+        #         #return yaml.load(yaml_file, Loader=yaml.FullLoader)
+        #         return yaml.safe_load(yaml_file)
+        # except FileNotFoundError:
+        #     print(cls.CONFIG_YAML_FILE_NAME + " does not exist, initializing the config without it.")
         config = cls()
         try:
             with open(cls.TOKEN_FILE_NAME, 'r') as token_file:
@@ -32,10 +33,10 @@ class Config:
             raise
         return config
 
-    def __init__(self, master_id: str = "", token: str = "", authorization_by_server = {}):
-        self.__master_id = master_id
-        self.__token = token
-        self.__authorizations_by_server = authorization_by_server
+    def __init__(self):
+        self.__master_id = ""
+        self.__token = ""
+        self.__authorizations_by_server = {}
 
     def save_to_file(self):
         with open(self.CONFIG_YAML_FILE_NAME, 'w') as config_output:
